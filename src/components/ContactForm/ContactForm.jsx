@@ -6,7 +6,7 @@ import { nanoid } from "nanoid";
 import { IoPersonAdd } from "react-icons/io5";
 import { IMaskInput } from "react-imask";
 import { useDispatch, useSelector } from "react-redux";
-import { nameContact } from "../../redux/store";
+import { addContact } from "../../redux/contactSlice";
 
 const userSchema = Yup.object().shape({
   name: Yup.string()
@@ -43,7 +43,7 @@ export const ContactForm = () => {
       }}
       validationSchema={userSchema}
       onSubmit={(values, { resetForm }) => {
-        dispatch(nameContact({ id: nanoid(), ...values }));
+        dispatch(addContact({ id: nanoid(), ...values }));
         resetForm();
       }}
     >

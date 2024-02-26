@@ -52,7 +52,8 @@ export const App = () => {
       {visibleUsers.length > 0 ? (
         <ContactList contacts={visibleUsers} onDelete={deleteUser} />
       ) : (
-        nameFilter && (
+        nameFilter &&
+        users.length > 0 && (
           <p className={css.text}>No matches found for `{nameFilter}`</p>
         )
       )}
