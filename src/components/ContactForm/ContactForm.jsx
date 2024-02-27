@@ -5,31 +5,34 @@ import css from "./ContactForm.module.css";
 import { nanoid } from "nanoid";
 import { IoPersonAdd } from "react-icons/io5";
 import { IMaskInput } from "react-imask";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { addContact } from "../../redux/contactSlice";
+import countries from "./countries";
 
 const userSchema = Yup.object().shape({
   name: Yup.string()
     .min(3, "Name must be at least 3 characters long")
     .required("Name is a required field"),
-  number: Yup.string().required("Phone number is required!"),
+  number: Yup.string()
+    .matches(/^\+?[\d()\-\s]+$/, "Invalid phone number format")
+    .required("Phone number is required"),
 });
 
 export const ContactForm = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector((state) => state.contacts);
-  console.log(contacts);
 
   const [countryCode, setCountryCode] = useState("+38"); // Початковий код країни
-  const [countryOptions] = useState([
-    { value: "+38", label: "Ukraine (+38)", mask: "+38 (000)-000-0000" },
-    { value: "+1", label: "United States (+1)", mask: "+1(000)-000-0000" },
-    { value: "+44", label: "United Kingdom (+44)", mask: "+44(0000)-000000" },
-    // Додайте інші країни за необхідності
-  ]);
+  const [placeholder, setPlaceholder] = useState("+38 (000)-000-0000");
+
+  const [countryOptions] = useState(countries);
 
   const handleCountryChange = (e) => {
-    setCountryCode(e.target.value);
+    const newCountryCode = e.target.value;
+    setCountryCode(newCountryCode);
+    const newPlaceholder = countryOptions.find(
+      (option) => option.value === newCountryCode
+    ).mask;
+    setPlaceholder(newPlaceholder);
   };
 
   const nameFieldId = useId();
@@ -69,7 +72,11 @@ export const ContactForm = () => {
           >
             Number
           </label>
-          <select value={countryCode} onChange={handleCountryChange}>
+          <select
+            className={css.select}
+            value={countryCode}
+            onChange={handleCountryChange}
+          >
             {countryOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
@@ -82,7 +89,9 @@ export const ContactForm = () => {
             type="tel"
             name="number"
             id={numberFieldId}
-            placeholder="066-123-45-67"
+            placeholder={
+              countryCode === "another" ? "Enter number" : placeholder
+            }
             mask={
               countryOptions.find((option) => option.value === countryCode).mask
             }

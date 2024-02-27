@@ -57,6 +57,7 @@
 
 .icon {
   margin-right: 10px;
+  flex-shrink: 0; /* Заборона зменшення розміру іконки */
 }
 .text {
   display: flex;

@@ -15,15 +15,3 @@ const filtersSlice = createSlice({
 export const { setFilter } = filtersSlice.actions;
 
 export const filtersReducer = filtersSlice.reducer;
-
-// export const setFilter = createAction("filters/setFilter");
-
-// export const initialState = {
-//   name: "",
-// };
-
-// export const filtersReduser = createReducer(initialState, (builder) => {
-//   builder.addCase(setFilter, (state, action) => {
-//     state.name = action.payload;
-//   });
-// });
