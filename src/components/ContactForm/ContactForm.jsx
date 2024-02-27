@@ -1,13 +1,14 @@
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import css from "./ContactForm.module.css";
 import { nanoid } from "nanoid";
 import { IoPersonAdd } from "react-icons/io5";
 import { IMaskInput } from "react-imask";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addContact } from "../../redux/contactSlice";
 import countries from "./countries";
+import { setFilter } from "../../redux/filterSlice";
 
 const userSchema = Yup.object().shape({
   name: Yup.string()
@@ -20,6 +21,14 @@ const userSchema = Yup.object().shape({
 
 export const ContactForm = () => {
   const dispatch = useDispatch();
+  const contacts = useSelector((state) => state.contacts.items);
+
+  //Скидаємо фільтр коли масив контактів порожній
+  useEffect(() => {
+    if (contacts.length === 0) {
+      dispatch(setFilter(""));
+    }
+  }, [contacts, dispatch]);
 
   const [countryCode, setCountryCode] = useState("+38"); // Початковий код країни
   const [placeholder, setPlaceholder] = useState("+38 (000)-000-0000");
