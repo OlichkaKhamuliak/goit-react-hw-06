@@ -4,36 +4,27 @@ import { SearchBox } from "./components/SearchBox/SearchBox";
 import { ContactList } from "./components/ContactList/ContactList";
 import { FaAddressBook } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  selectContacts,
+  selectFilter,
+  selectVisibleContacts,
+} from "./redux/selectors";
+import { useEffect } from "react";
+import { setFilter } from "./redux/filterSlice";
 
 export const App = () => {
   const dispatch = useDispatch();
-  const users = useSelector((state) => state.contacts.items);
-  const nameFilter = useSelector((state) => state.filters.name);
 
-  const addUser = (newUser) => {
-    dispatch({
-      type: "contacts/addContact",
-      payload: newUser,
-    });
-  };
+  const contacts = useSelector(selectContacts);
+  const filter = useSelector(selectFilter);
+  const visibleContacts = useSelector(selectVisibleContacts);
 
-  const deleteUser = (userId) => {
-    dispatch({
-      type: "contacts/deleteContact",
-      payload: userId,
-    });
-  };
-
-  const visibleUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(nameFilter.toLowerCase())
-  );
-
-  const handleFilterChange = (newValue) => {
-    dispatch({
-      type: "filters/setFilter",
-      payload: newValue,
-    });
-  };
+  //Скидуємо фільтр коли масив контактів порожній
+  useEffect(() => {
+    if (contacts.length === 0) {
+      dispatch(setFilter(""));
+    }
+  }, [contacts, dispatch]);
 
   return (
     <div style={{ padding: 8 }}>
@@ -41,20 +32,19 @@ export const App = () => {
         <FaAddressBook className={css.icon} />
         Phone Book
       </h1>
-      <ContactForm onSubmit={addUser} />
-      {users.length > 0 ? (
-        <SearchBox value={nameFilter} onChange={handleFilterChange} />
+      <ContactForm />
+      {contacts.length > 0 ? (
+        <SearchBox />
       ) : (
         <p className={`${css.text} ${css.noContacts}`}>
           You don`t have any contacts yet.
         </p>
       )}
-      {visibleUsers.length > 0 ? (
-        <ContactList contacts={visibleUsers} onDelete={deleteUser} />
+      {visibleContacts.length > 0 ? (
+        <ContactList />
       ) : (
-        nameFilter &&
-        users.length > 0 && (
-          <p className={css.text}>No matches found for `{nameFilter}`</p>
+        contacts.length > 0 && (
+          <p className={css.text}>No matches found for `{filter}`</p>
         )
       )}
     </div>
