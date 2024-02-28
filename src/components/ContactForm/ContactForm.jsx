@@ -72,6 +72,7 @@ export const ContactForm = () => {
             toast.error(
               `A contact ${conflictReason} is already exist in the address book.`
             );
+            return;
           }
 
           dispatch(addContact({ id: nanoid(), ...values }));
