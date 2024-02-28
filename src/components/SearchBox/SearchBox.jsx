@@ -8,7 +8,7 @@ export const SearchBox = () => {
   const dispatch = useDispatch();
   return (
     <div className={css.wrapper}>
-      <p>Finds contacts by name</p>
+      <p>Finds contacts by name or phone number</p>
       <input
         className={css.input}
         type="text"
